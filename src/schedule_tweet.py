@@ -5,7 +5,10 @@ import holidays
 
 client = boto3.client("lambda")
 weird_holidays = ['Labor Day', 'Christmas Day'] # We close at 1pm when these holidays fall tues-fri
-
+# Lambda 1
+# If its a closed holiday, do not run
+# at 1:30, check if its a 1:30 holiday. If it is, trigger lambda 2
+# run again at 4. if its not a 1:30 day nor a holiday, execute lambda 2
 def check_weird_holiday(today, us_holidays):
 
     check_christmas_labor = today + datetime.timedelta(days=1) 
