@@ -41,9 +41,12 @@ def main():
 
         if closes_at_one == True and curr_time == '18':
             # run lambda at 1
+            print('Running at 1pm')
             output = invoke_lambda(today, closes_at_one)
-        elif closes_at_one == False and curr_time == '21':
+        # elif closes_at_one == False and curr_time == '21':
+        elif closes_at_one == False:
             # run lambda at 4
+            print('Running at 4pm')
             output = invoke_lambda(today, closes_at_one)
         else:
             output = 'Error running tweet.'
@@ -52,7 +55,7 @@ def main():
 
 def invoke_lambda(today, closes_at_one):
     inputParams = {
-        "Today" : today,
+        "Today" : today.strftime("%m/%d/%Y"),
         "closes_at_one" : closes_at_one
     }
     invoke_function = client.invoke(
