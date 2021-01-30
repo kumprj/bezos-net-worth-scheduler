@@ -11,7 +11,8 @@ arn_name = os.environ['arn']
 weird_holidays = ['Labor Day', 'Christmas Day'] 
 # We close at 1pm when these holidays fall tues-fri
 
-# Pull ARN from environment variable since it seems it should be secured?
+# TODO: Pull ARN from environment variable since it seems it should be secured?
+
 # Lambda 1
 # If its a closed holiday, do not run
 # at 1, check if its a 1 holiday. If it is, trigger lambda 2
@@ -22,7 +23,7 @@ def check_weird_holiday(today, us_holidays):
 
     for day in holidays.US(years = curr_year).items(): # [0] date 1/1/year [1] text name of holiday
         if check_christmas_labor == day[0] and day[1] in weird_holidays:
-            # If we're a Tuesday to Friday and tomorrow is a weird_holiday, we close at 1 today
+            # If we're a Tuesday to Friday and tomorrow is a 'weird_holiday', we close at 1 today
             if check_christmas_labor.weekday() <= 4 and check_christmas_labor.weekday() >= 1:
                 return True
     return False
@@ -32,15 +33,14 @@ def main():
     today = datetime.date.today() # - datetime.timedelta(days=25)
     us_holidays = holidays.US()
     # print(today in us_holidays and 'New Yearr\'s Day' in us_holidays[1]) # works for td 25
+    # Need to handle when holidays are observed for markets vs when they actually are
+    # for ptr in holidays.US(years = 2021).items():
+    #     print(ptr)
 
     # Handles EST vs EDT for us by using US/Eastern.  We only care about the hour.
     eastern = pytz.timezone('US/Eastern')
     fmt = '%H'
     curr_time = datetime.datetime.now(eastern).strftime(fmt)
-
-    # Need to handle when holidays are observed for markets vs when they actually are
-    # for ptr in holidays.US(years = 2021).items():
-    #     print(ptr)
     
     if today in us_holidays:
         output = 'Today is a holiday. Market is closed.'
