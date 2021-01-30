@@ -7,7 +7,7 @@ import os
 
 # Global Variables for our Lambda
 client = boto3.client("lambda")
-arn_name = os.environ['arn']
+arn_name = os.environ['arn'] 
 weird_holidays = ['Labor Day', 'Christmas Day'] 
 # We close at 1pm when these holidays fall tues-fri
 
@@ -28,6 +28,19 @@ def check_weird_holiday(today, us_holidays):
                 return True
     return False
 
+def invoke_sendtweet_lambda(today, closes_at_one, time_ran):
+    inputParams = {
+        "Today" : today.strftime("%m/%d/%Y"),
+        "closes_at_one" : closes_at_one,
+        "Time Ran" : time_ran
+    }
+    invoke_function = client.invoke(
+        FunctionName = 'arn:aws:lambda:us-east-1:875660052076:function:bezos-net-worth', # convert this to env var?
+        InvocationType = 'Event',
+        Payload = json.dumps(inputParams)
+    )
+    return invoke_function
+    
 def main():
     output = ""
     today = datetime.date.today() # - datetime.timedelta(days=25)
@@ -54,30 +67,17 @@ def main():
             # run lambda at 1
             print('Running at 1pm')
             time_ran = 'Running at 1pm.'
-            output = invoke_lambda(today, closes_at_one, time_ran)
+            output = invoke_sendtweet_lambda(today, closes_at_one, time_ran)
         # elif closes_at_one == False and (curr_time == '21' or curr_time == '20'):
         elif closes_at_one == False:
             # run lambda at 4
             print('Running at 4pm')
             time_ran = 'Running at 4pm.'
-            output = invoke_lambda(today, closes_at_one, time_ran)
+            output = invoke_sendtweet_lambda(today, closes_at_one, time_ran)
         else:
             output = 'Error running tweet.'
 
     print(output)
-
-def invoke_lambda(today, closes_at_one, time_ran):
-    inputParams = {
-        "Today" : today.strftime("%m/%d/%Y"),
-        "closes_at_one" : closes_at_one,
-        "Time Ran" : time_ran
-    }
-    invoke_function = client.invoke(
-        FunctionName = 'arn:aws:lambda:us-east-1:875660052076:function:bezos-net-worth', # convert this to env var?
-        InvocationType = 'Event',
-        Payload = json.dumps(inputParams)
-    )
-    return invoke_function
 
 # Handler
 # def lambda_handler(event, context):
