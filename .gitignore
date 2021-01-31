@@ -5,7 +5,10 @@ __pycache__/
 
 # C extensions
 *.so
-
+# Terraform 
+**/.terraform
+**/package.zip
+**/terraform.tfstate
 # Distribution / packaging
 .Python
 build/
