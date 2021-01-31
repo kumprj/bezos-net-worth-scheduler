@@ -5,7 +5,7 @@ module "lambda_function" {
 
   function_name = "bezos-net-worth-scheduler"
   description   = "Lambda Function to Schedule Daily Jeff Bezos Net Worth tweet."
-  handler       = "index.lambda_handler"
+  handler       = "schedule_tweet.lambda_handler"
   runtime       = "python3.7"
   
   create_package         = false
