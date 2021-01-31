@@ -4,7 +4,7 @@ import datetime
 import holidays
 import pytz
 import os
-
+# setuptools==51.1.0
 # Global Variables for our Lambda
 client = boto3.client("lambda")
 arn_name = os.environ['arn'] 
@@ -81,9 +81,9 @@ def main():
     print(output)
 
 # Handler
-# def lambda_handler(event, context):
-#     main()
+def lambda_handler(event, context):
+    main()
 
 # For Local dev
-if __name__ == "__main__":
-    main()
+# if __name__ == "__main__":
+#     main()
