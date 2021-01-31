@@ -5,3 +5,4 @@ boto3==1.11.11
 pytz==2019.3
 holidays==0.10.4
 DateTime==4.3
+setuptools==51.1.0
