@@ -69,8 +69,8 @@ def main():
             time_ran = 'Running at 1pm.'
             output = invoke_sendtweet_lambda(today, closes_at_one, time_ran)
         # elif closes_at_one == False and (curr_time == '21' or curr_time == '20'):
-        # elif closes_at_one == False and curr_time == '21':
-        elif closes_at_one == False:
+        elif closes_at_one == False and curr_time == '21':
+        # elif closes_at_one == False:
             # run lambda at 4
             print('Running at 4pm')
             time_ran = 'Running at 4pm.'
