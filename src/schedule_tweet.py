@@ -7,7 +7,7 @@ import os
 # setuptools==51.1.0
 # Global Variables for our Lambda
 client = boto3.client("lambda")
-arn_name = os.environ['arn'] 
+# arn_name = os.environ['arn'] 
 weird_holidays = ['Labor Day', 'Christmas Day'] 
 # We close at 1pm when these holidays fall tues-fri
 
