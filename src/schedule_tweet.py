@@ -76,7 +76,7 @@ def main():
             time_ran = 'Running at 4pm.'
             output = invoke_sendtweet_lambda(today, closes_at_one, time_ran)
         else:
-            output = 'Error running tweet.'
+            output = f'Error running tweet. {curr_time}'
 
     print(output)
 
