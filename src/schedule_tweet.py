@@ -54,7 +54,7 @@ def main():
     eastern = pytz.timezone('US/Eastern')
     fmt = '%H'
     curr_time = datetime.datetime.now(eastern).strftime(fmt)
-    
+    print (curr_time)
     if today in us_holidays:
         output = 'Today is a holiday. Market is closed.'
         # If market is closed, we just want to print an output and not
