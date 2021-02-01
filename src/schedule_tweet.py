@@ -81,9 +81,9 @@ def main():
     print(output)
 
 # Handler
-# def lambda_handler(event, context):
-#     main()
+def lambda_handler(event, context):
+    main()
 
 # For Local dev
-if __name__ == "__main__":
-    main()
+# if __name__ == "__main__":
+#     main()
