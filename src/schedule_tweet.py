@@ -63,13 +63,13 @@ def main():
         # 18 and 21 are daylight savings numbers, how to handle this?
         closes_at_one = check_weird_holiday(today, us_holidays)
 
-        if closes_at_one == True and curr_time == '13': # or curr_time == '17' ?
+        if closes_at_one == True and (curr_time == '18' or curr_time == '17'): # or curr_time == '17' ?
             # run lambda at 1
             print('Running at 1pm')
             time_ran = 'Running at 1pm.'
             output = invoke_sendtweet_lambda(today, closes_at_one, time_ran)
         # elif closes_at_one == False and (curr_time == '21' or curr_time == '20'):
-        elif closes_at_one == False and curr_time == '16':
+        elif closes_at_one == False and (curr_time == '21' or curr_time == '20'):
         # elif closes_at_one == False:
             # run lambda at 4
             print('Running at 4pm')
