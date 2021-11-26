@@ -63,7 +63,7 @@ def main():
     
     # Check if we're currently in daylight savings or not so we run at the correct UTC time.
     daylight_savings = is_dst(datetime.datetime(year,month,day), eastern)
-    
+
     if today in us_holidays:
         output = 'Today is a holiday. Market is closed.'
         # If market is closed, we just want to print an output and not
@@ -72,13 +72,13 @@ def main():
         # First check if the market closes at 1 today on the weird holidays.
         closes_at_one = check_weird_holiday(today, us_holidays)
 
-        if closes_at_one == True and ((curr_time == '18' and daylight_savings == False) or (curr_time == '17' and daylight_savings == True)): # or curr_time == '17' ?
+        if closes_at_one == True and ((curr_time == '14' and daylight_savings == True) or (curr_time == '13' and daylight_savings == False)): # or curr_time == '18' if UTC.
             # run lambda at 1pm, accounting for daylight savings.
             print('Running at 1pm')
             time_ran = 'Running at 1pm.'
             output = invoke_sendtweet_lambda(today, closes_at_one, time_ran)
         
-        elif closes_at_one == False and ((curr_time == '21' and daylight_savings == False) or (curr_time == '20' and daylight_savings == True)):
+        elif closes_at_one == False and ((curr_time == '17' and daylight_savings == True) or (curr_time == '16' and daylight_savings == False)): # curr_time == '21' if using UTC.
             # run lambda at 1pm, accounting for daylight savings.
             print('Running at 4pm')
             time_ran = 'Running at 4pm.'
