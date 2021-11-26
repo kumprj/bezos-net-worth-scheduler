@@ -7,7 +7,7 @@ import os
 # setuptools==51.1.0
 # Global Variables for our Lambda
 client = boto3.client("lambda")
-# arn_name = os.environ['arn'] 
+arn_name = os.environ['arn'] 
 weird_holidays = ['Labor Day', 'Christmas Day'] 
 # We close at 1pm when these holidays fall tues-fri
 
@@ -35,48 +35,56 @@ def invoke_sendtweet_lambda(today, closes_at_one, time_ran):
         "Time Ran" : time_ran
     }
     invoke_function = client.invoke(
-        FunctionName = 'arn:aws:lambda:us-east-1:875660052076:function:bezos-net-worth', # convert this to env var?
+        FunctionName = f'{arn_name}', # convert this to env var?
         InvocationType = 'Event',
         Payload = json.dumps(inputParams)
     )
     return invoke_function
-    
+
+# Function to check if we're in daylight savings or not by passing our timezone (Eastern) and the date.
+# Takes advantage of pytz library.
+def is_dst(dt,timeZone):
+   aware_dt = timeZone.localize(dt)
+   return aware_dt.dst() != datetime.timedelta(0,0)
+
 def main():
     output = ""
     today = datetime.date.today() # - datetime.timedelta(days=25)
     us_holidays = holidays.US()
-    # print(today in us_holidays and 'New Yearr\'s Day' in us_holidays[1]) # works for td 25
-    # Need to handle when holidays are observed for markets vs when they actually are
-    # for ptr in holidays.US(years = 2021).items():
-    #     print(ptr)
-
+    print(today)
+    # Get Year Month and Day as int's to pass to dayligtht savings.
+    year = int(today.strftime('%Y'))
+    month = int(today.strftime('%m'))
+    day = int(today.strftime('%d'))
     # Handles EST vs EDT for us by using US/Eastern.  We only care about the hour.
     eastern = pytz.timezone('US/Eastern')
     fmt = '%H'
     curr_time = datetime.datetime.now(eastern).strftime(fmt)
-    print (curr_time)
+    
+    # Check if we're currently in daylight savings or not so we run at the correct UTC time.
+    daylight_savings = is_dst(datetime.datetime(year,month,day), eastern)
+    
     if today in us_holidays:
         output = 'Today is a holiday. Market is closed.'
         # If market is closed, we just want to print an output and not
         # invoke our other lambda.
     else: 
-        # 18 and 21 are daylight savings numbers, how to handle this?
+        # First check if the market closes at 1 today on the weird holidays.
         closes_at_one = check_weird_holiday(today, us_holidays)
 
-        if closes_at_one == True and (curr_time == '18' or curr_time == '13'): # or curr_time == '17' ?
-            # run lambda at 1
+        if closes_at_one == True and ((curr_time == '18' and daylight_savings == False) or (curr_time == '17' and daylight_savings == True)): # or curr_time == '17' ?
+            # run lambda at 1pm, accounting for daylight savings.
             print('Running at 1pm')
             time_ran = 'Running at 1pm.'
             output = invoke_sendtweet_lambda(today, closes_at_one, time_ran)
-        # elif closes_at_one == False and (curr_time == '21' or curr_time == '20'):
-        elif closes_at_one == False and (curr_time == '21' or curr_time == '16'):
-        # elif closes_at_one == False:
-            # run lambda at 4
+        
+        elif closes_at_one == False and ((curr_time == '21' and daylight_savings == False) or (curr_time == '20' and daylight_savings == True)):
+            # run lambda at 1pm, accounting for daylight savings.
             print('Running at 4pm')
             time_ran = 'Running at 4pm.'
             output = invoke_sendtweet_lambda(today, closes_at_one, time_ran)
         else:
-            output = f'Error running tweet. {curr_time}'
+            output = f'Error running tweet. Current time is {curr_time} UTC.'
 
     print(output)
 
